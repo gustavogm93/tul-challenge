@@ -19,7 +19,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "Shopping_Cart")
 @Data
-@AllArgsConstructor
+//@AllArgsConstructor
 public class ShoppingCart {
 
     @Id
@@ -33,5 +33,7 @@ public class ShoppingCart {
     public ShoppingCart(){
         this.id = UUID.randomUUID();
     }
+
+
 
 }

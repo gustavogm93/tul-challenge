@@ -1,4 +1,4 @@
-package com.tul.challenge.product.application;
+package com.tul.challenge.product.services;
 
 import com.tul.challenge.product.model.Product;
 

@@ -1,7 +1,8 @@
-package com.tul.challenge.product.application;
+package com.tul.challenge.product.services;
 
-import com.tul.challenge.product.infrastructure.ProductRepository;
 import com.tul.challenge.product.model.Product;
+import com.tul.challenge.product.repository.ProductRepository;
+import com.tul.challenge.product.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl  implements ProductService{
+public class ProductServiceImpl  implements ProductService {
 
 
     private final ProductRepository productRepository;

@@ -1,4 +1,4 @@
-package com.tul.challenge.product.infrastructure;
+package com.tul.challenge.product.repository;
 
 import com.tul.challenge.product.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;

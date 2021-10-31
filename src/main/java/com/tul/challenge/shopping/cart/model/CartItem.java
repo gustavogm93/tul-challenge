@@ -9,28 +9,31 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Shopping_Cart")
+@Table(name = "Cart_Item")
 @Data
 //@AllArgsConstructor
-public class ShoppingCart {
+public class CartItem {
 
     @Id
     @Type(type="uuid-char")
     private UUID id;
 
-    //private Product products;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
-    //private ShoppingCartEnum state;
+    private int quantity;
 
-    public ShoppingCart(){
+    @Column(columnDefinition = "ENUM('PENDING', 'COMPLETED')")
+    @Enumerated(EnumType.STRING)
+    private State state = State.PENDING;
+
+    public CartItem(){
         this.id = UUID.randomUUID();
     }
 

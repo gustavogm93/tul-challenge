@@ -1,6 +1,6 @@
 package com.tul.challenge.shopping.cart.model;
 
-public enum ShoppingCartEnum {
+public enum State {
 
     PENDING, COMPLETED;
 

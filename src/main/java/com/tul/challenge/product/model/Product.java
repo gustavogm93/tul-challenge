@@ -8,29 +8,34 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.UUID;
 
+@Data
 @Entity
 @Table(name = "Product")
-@Data
-public class Product {
+public class Product implements Serializable {
 
     @Id
     @Type(type="uuid-char")
     private UUID id;
 
+    @NotEmpty(message = "name cannot not be empty")
+    @Column(name="name")
     private String name;
 
+    @Digits(integer = 6, fraction = 2, message = "price must be 2 fraction decimal")
+    @Positive(message = "price must be positive")
     private BigDecimal price;
 
-    private String sku;
+    @NotEmpty(message = "SKU cannot be empty")
+    private String SKU;
 
+    @NotEmpty(message = "description cannot be empty")
     private String description;
 
     private boolean discount = false;
@@ -39,33 +44,26 @@ public class Product {
         this.id = UUID.randomUUID();
     }
 
+    public static Product build(){
+        return new Product();
+    }
+
     public Product fill(String name, BigDecimal price, String description, String sku, boolean discount) {
         price = discount ? price.divide(BigDecimal.valueOf(2)) : price;
 
          Product product = new Product();
             product.setName(name);
-            product.setSku(sku);
+            product.setSKU(sku);
             product.setDescription(description);
             product.setPrice(price);
             product.setDiscount(discount);
 
-            validateProduct();
             return product;
     }
 
-
-    public static Product build(){
-        return new Product();
-    }
-
-     public void validateProduct() {
-
-        if(this.name.isEmpty())
-            throw new BadRequestException("hola");
-    }
-
-
 /*
+
+BRAND - TIPO DE PRODUCTO -
     public Product(String name, String sku, String description,Double price, boolean discount) {
         this.id = UUID.randomUUID();
         this.name = name;

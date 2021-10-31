@@ -1,8 +1,7 @@
 package com.tul.challenge.product.services;
 
-import com.tul.challenge.product.model.Product;
 import com.tul.challenge.product.repository.ProductRepository;
-import com.tul.challenge.product.services.ProductService;
+import com.tul.challenge.product.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

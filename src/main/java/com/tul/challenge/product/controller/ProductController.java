@@ -1,16 +1,14 @@
 package com.tul.challenge.product.controller;
 
+import com.tul.challenge.config.exception.BadRequestException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tul.challenge.config.exception.BadRequestException;
 import com.tul.challenge.config.exception.error.ErrorMessage;
 import com.tul.challenge.product.model.Product;
 import com.tul.challenge.product.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.math.BigDecimal;

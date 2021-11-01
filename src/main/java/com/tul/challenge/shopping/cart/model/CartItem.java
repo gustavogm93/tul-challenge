@@ -32,6 +32,8 @@ public class CartItem {
         this.id = UUID.randomUUID();
     }
 
-
+    public static CartItem build(){
+        return new CartItem();
+    }
 
 }

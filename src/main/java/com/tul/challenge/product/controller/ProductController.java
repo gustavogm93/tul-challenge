@@ -1,21 +1,17 @@
 package com.tul.challenge.product.controller;
 
-import com.tul.challenge.config.exception.BadRequestException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tul.challenge.config.exception.error.ErrorMessage;
+import com.tul.challenge.config.exception.error.FormatMessage;
 import com.tul.challenge.product.model.Product;
 import com.tul.challenge.product.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/product")
@@ -29,35 +25,52 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/")
-    public Product home(@Valid @RequestBody Product products, BindingResult result){
-        if(result.hasErrors())
-            throw new BadRequestException(this.formatMessage(result));
+    @GetMapping
+    public ResponseEntity<List<Product>> listProduct(@RequestParam(name = "categoryId", required = false) Long categoryId){
 
-        Product product = Product.build().fill("", BigDecimal.valueOf(200.10) ,"PRA-52", "pintura en balde", true);
+        List<Product> products = productService.listAllProduct();
 
-        return product;
+        if (products.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(products);
+        }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Product> getProduct(@PathVariable("id") UUID id) {
+        Product product =  productService.getProduct(id);
+        if (null==product){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(product);
     }
 
-    private String formatMessage( BindingResult result){
-        List<Map<String,String>> errors = result.getFieldErrors().stream()
-                .map(err ->{
-                    Map<String,String>  error =  new HashMap<>();
-                    error.put(err.getField(), err.getDefaultMessage());
-                    return error;
-
-                }).collect(Collectors.toList());
-        ErrorMessage errorMessage = ErrorMessage.builder()
-                .code("01")
-                .messages(errors).build();
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonString="";
-        try {
-            jsonString = mapper.writeValueAsString(errorMessage);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+    @PostMapping
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product, BindingResult result){
+        if (result.hasErrors()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, FormatMessage.toJson(result));
         }
-        return jsonString;
+        Product productCreate =  productService.createProduct(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productCreate);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable("id") UUID id, @Valid @RequestBody Product product){
+        product.setId(id);
+        Product productDB =  productService.updateProduct(product);
+        if (productDB == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(productDB);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Product> deleteProduct(@PathVariable("id") UUID id){
+        Product productDelete = productService.deleteProduct(id);
+        if (productDelete == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(productDelete);
     }
 
 

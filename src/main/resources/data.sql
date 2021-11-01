@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Product(
     `price` DECIMAL(8,2) DEFAULT NULL,
     `sku` varchar(255) DEFAULT NULL,
     `description` varchar(255) DEFAULT NULL,
-    `discount` bool DEFAULT false,
+    `discount` bool DEFAULT FALSE NULL,
     PRIMARY KEY (`id`)
     )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 DELETE FROM product;

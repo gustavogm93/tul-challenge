@@ -36,10 +36,8 @@ public class ProductServiceImpl  implements ProductService {
         if (null == productDB){
             return null;
         }
-        productDB.setName(product.getName());
-        productDB.setDescription(product.getDescription());
-        productDB.setPrice(product.getPrice());
-        productDB.setSKU(product.getSKU());
+        productDB.updateProduct(product);
+
         return productRepository.save(productDB);
     }
 

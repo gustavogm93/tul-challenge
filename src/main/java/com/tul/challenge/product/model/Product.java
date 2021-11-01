@@ -1,6 +1,9 @@
 package com.tul.challenge.product.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -11,12 +14,15 @@ import java.util.UUID;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table(name = "Product")
 public class Product implements Serializable {
 
     @Id
     @Type(type="uuid-char")
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
     @NotEmpty(message = "name cannot not be empty")
     @Column(name="name")
@@ -34,53 +40,21 @@ public class Product implements Serializable {
 
     private boolean discount = false;
 
-    protected Product(){
-        this.id = UUID.randomUUID();
+    public void updateProduct(Product product) {
+        BigDecimal oldPrice = this.price;
+
+        this.name = product.getName();
+        this.description = product.getDescription();
+        this.price = product.getPrice();
+        this.SKU = product.getSKU();
+        this.updateDiscount(product.isDiscount(), oldPrice);
     }
 
-    public static Product build(){
-        return new Product();
-    }
+    private void updateDiscount(boolean discount, BigDecimal oldPrice){
+        if(discount == this.discount || this.price.compareTo(oldPrice) != 0) return;
+        //price distinct no update
+        this.price =  this.discount ? this.price.multiply(BigDecimal.valueOf(2)) : this.price.divide(BigDecimal.valueOf(2));
 
-    public Product fill(String name, BigDecimal price, String description, String sku, boolean discount) {
-        price = discount ? price.divide(BigDecimal.valueOf(2)) : price;
-
-         Product product = new Product();
-            product.setName(name);
-            product.setSKU(sku);
-            product.setDescription(description);
-            product.setPrice(price);
-            product.setDiscount(discount);
-
-            return product;
-    }
-
-/*
-
-BRAND - TIPO DE PRODUCTO -
-    public Product(String name, String sku, String description,Double price, boolean discount) {
-        this.id = UUID.randomUUID();
-        this.name = name;
-        this.sku = sku;
-        this.description = description;
-        this.price = discount ? price / 2.00 : price;
         this.discount = discount;
-    } */
-
-//EN LA BASE DE DATOS SIEMPRE EL PUBLIC CON TODO
-  // CUANDO LO CREO YO
-
-    //get traigo un objeto ya listo
-    // construyo y se reduce el precio
-
-/*
-  public static Product createProduct(){
-        return Product.builder().name("Pala").sku("a").description("pala ").price(250.00).build();
-  }
-
-  public static Product createDiscountedProduct(){
-      return Product.builder().name("Pala").sku("a").description("pala ").price(450.00).discount(true).build();
-  }
-*/
-
+    }
 }

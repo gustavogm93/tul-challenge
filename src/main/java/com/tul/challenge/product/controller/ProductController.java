@@ -15,7 +15,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("api/product")
-@ControllerAdvice
 public class ProductController {
 
     ProductService productService;
@@ -39,7 +38,7 @@ public class ProductController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable("id") UUID id) {
         Product product =  productService.getProduct(id);
-        if (null==product){
+        if (product == null){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(product);
@@ -65,12 +64,11 @@ public class ProductController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable("id") UUID id){
-        Product productDelete = productService.deleteProduct(id);
-        if (productDelete == null){
+    public ResponseEntity<String> deleteProduct(@PathVariable("id") UUID id){
+        if (productService.deleteProduct(id)){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(productDelete);
+        return ResponseEntity.ok("Product deleted");
     }
 
 

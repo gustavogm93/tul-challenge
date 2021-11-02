@@ -42,11 +42,12 @@ public class ProductServiceImpl  implements ProductService {
     }
 
     @Override
-    public Product deleteProduct(UUID id) {
+    public boolean deleteProduct(UUID id) {
         Product productDB = getProduct(id);
         if (null == productDB){
-            return null;
+            return false;
         }
-        return productRepository.save(productDB);
+        productRepository.delete(productDB);
+        return true;
     }
 }

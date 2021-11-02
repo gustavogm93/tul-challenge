@@ -10,5 +10,5 @@ public interface ProductService {
     public Product getProduct(UUID id);
     public Product createProduct(Product product);
     public Product updateProduct(Product product);
-    public Product deleteProduct(UUID id);
+    public boolean deleteProduct(UUID id);
 }

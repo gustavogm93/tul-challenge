@@ -29,4 +29,6 @@ CREATE TABLE IF NOT EXISTS Cart_Item(
     PRIMARY KEY (`id`)
     )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+alter table Cart_Item add foreign key (product_id) references Product(id) on DELETE CASCADE;
+
 INSERT INTO Cart_Item(id, product_id, quantity, state) VALUES ('223e4567-e89b-12d3-a456-426614174053','123e4567-e89b-12d3-a456-426614174000', 1, 'COMPLETED');

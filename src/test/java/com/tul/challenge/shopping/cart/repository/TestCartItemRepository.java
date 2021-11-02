@@ -1,19 +1,17 @@
 package com.tul.challenge.shopping.cart.repository;
 
 import com.tul.challenge.shopping.cart.model.CartItem;
-import com.tul.challenge.shopping.cart.repository.CartItemRepository;
 import com.tul.challenge.product.model.Product;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @DataJpaTest
@@ -24,25 +22,46 @@ public class TestCartItemRepository {
     @Autowired private CartItemRepository cartItemRepository;
     @Autowired private TestEntityManager testEntityManager;
 
-/*
-    @BeforeEach
-    public void setUp(){
 
-    }*/
+
 
     @Test
-    public void testSaveItem() {
-        UUID productId = UUID.randomUUID();;
-        //testEntityManager.persist(Product.build().fill("Pala", BigDecimal.valueOf(500.30, "pala nueva", "SKU-2", true));
+    void injectedComponentsAreNotNull(){
+        Assertions.assertNotNull(cartItemRepository);
+        Assertions.assertNotNull(testEntityManager);
+    }
+
+
+    private final UUID productId = UUID.randomUUID();
+
+
+
+
+    @Test
+    public void testSaveCartItem() {
 
         Product product = testEntityManager.find(Product.class, productId);
 
-        CartItem cartItemMock = new CartItem();
-        cartItemMock.setProduct(product);
-        cartItemMock.setQuantity(1);
+        CartItem cartItemMock1 = new CartItem();
+        cartItemMock1.setProduct(product);
+        cartItemMock1.setQuantity(1);
 
-        CartItem cartItem = cartItemRepository.save(cartItemMock);
-        System.out.println(cartItem);
+        CartItem cartItemMock2 = new CartItem();
+        cartItemMock2.setProduct(new Product(UUID.randomUUID()));
+        cartItemMock2.setQuantity(1);
+
+        List<CartItem> list = new ArrayList<>();
+        list.add(cartItemMock1);
+        list.add(cartItemMock2);
+        cartItemRepository.saveAll(list);
+        Assertions.assertNotNull(list);
+    }
+
+    @Test
+    public void testFindByProduct() {
+
+
+
     }
 
 }

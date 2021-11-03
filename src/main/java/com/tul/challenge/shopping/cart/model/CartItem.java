@@ -2,6 +2,7 @@ package com.tul.challenge.shopping.cart.model;
 
 
 import com.tul.challenge.product.model.Product;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 
@@ -16,14 +17,14 @@ import java.util.UUID;
 @Entity
 @Table(name = "Cart_Item")
 @Data
-//@AllArgsConstructor
+@AllArgsConstructor
 public class CartItem implements Serializable {
 
     @Id
     @Type(type="uuid-char")
     private UUID id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "PRODUCT_FK"))
     private Product product;
 
@@ -34,6 +35,10 @@ public class CartItem implements Serializable {
     @Column(columnDefinition = "ENUM('PENDING', 'COMPLETED')")
     @Enumerated(EnumType.STRING)
     private State state = State.PENDING;
+
+    /*@Column(name = "shopping_cart_id")
+    @Type(type="uuid-char")
+    private UUID shoppingCartId; */
 
     public CartItem(){
         this.id = UUID.randomUUID();

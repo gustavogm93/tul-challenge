@@ -26,7 +26,7 @@ public class ShoppingCartController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CartItem>> getShoppingCart(@RequestParam(name = "categoryId", required = false) Long categoryId){
+    public ResponseEntity<List<CartItem>> getShoppingCart(){
 
         List<CartItem> cartItems = cartItemService.listAllCartItem();
 

@@ -1,13 +1,15 @@
 package com.tul.challenge.shopping.cart.services;
 
-import com.tul.challenge.config.exception.DuplicateCartItemException;
-import com.tul.challenge.config.exception.NotFoundException;
-import com.tul.challenge.config.exception.ShoppingCartEmptyException;
-import com.tul.challenge.config.exception.ShoppingCartHasStateCompletedException;
+import com.tul.challenge.config.exception.*;
+import com.tul.challenge.shopping.cart.exceptions.cart.item.DuplicateCartItemException;
+import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartEmptyException;
+import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartHasStateCompletedException;
+import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartNotFoundException;
 import com.tul.challenge.shopping.cart.model.CartItem;
 import com.tul.challenge.shopping.cart.model.ShoppingCart;
 import com.tul.challenge.shopping.cart.model.State;
 import com.tul.challenge.shopping.cart.repository.ShoppingCartRepository;
+import com.tul.challenge.shopping.cart.utils.ValidateTool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +30,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
     }
 
     public ShoppingCart getShoppingCart(UUID id)  {
-        return shoppingCartRepository.findById(id).orElse(null);
+        return shoppingCartRepository.findById(id).orElseThrow(()-> new ShoppingCartNotFoundException("Shopping Cart not found"));
     }
 
     public ShoppingCart createShoppingCart(ShoppingCart shoppingCart) {
@@ -63,14 +65,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
 
         ShoppingCart shoppingCart = this.getShoppingCart(shoppingCartId);
 
-        if (shoppingCart == null)
-            throw new NotFoundException("shopping cart not found");
+        ValidateTool.shoppingCartIsNull(shoppingCart);
 
         if (shoppingCart.getState() == State.COMPLETED)
-            throw new ShoppingCartHasStateCompletedException("shopping cart is currently completed");
+            throw new ShoppingCartHasStateCompletedException("Shopping Cart is currently completed");
 
         if( shoppingCart.getCartItems() == null)
-            throw new ShoppingCartEmptyException("shopping cart is empty");
+            throw new ShoppingCartEmptyException("Checkout Shopping Cart: Shopping Cart doesn't have cart items");
 
         shoppingCart.setState(State.COMPLETED);
 
@@ -81,7 +82,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
 
 
     public boolean deleteCartItemInShoppingCart(UUID id, CartItem cartItem) {
-
         ShoppingCart shoppingCart = this.getShoppingCart(id);
         CartItem cartItemDB = cartItemService.getCartItem(cartItem.getId());
 

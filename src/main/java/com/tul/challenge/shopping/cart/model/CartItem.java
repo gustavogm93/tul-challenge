@@ -1,7 +1,7 @@
 package com.tul.challenge.shopping.cart.model;
 
 
-import com.tul.challenge.config.exception.UpdateDifferentCartItemException;
+import com.tul.challenge.shopping.cart.exceptions.cart.item.UpdateDifferentCartItemException;
 import com.tul.challenge.product.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

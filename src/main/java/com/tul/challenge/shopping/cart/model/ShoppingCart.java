@@ -1,14 +1,11 @@
 package com.tul.challenge.shopping.cart.model;
 
-import com.tul.challenge.config.exception.ShoppingCartNotHaveCartItemException;
+import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartNotHaveCartItemException;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.*;
 import javax.validation.Valid;
 import java.io.Serializable;
@@ -75,7 +72,7 @@ public class ShoppingCart implements Serializable {
         boolean hasCartItem = cartItems.remove(cartItemRequest);
 
         if(!hasCartItem)
-        throw new ShoppingCartNotHaveCartItemException("Shopping cart not have cart item requested");
+        throw new ShoppingCartNotHaveCartItemException("Update CartItem on ShoppingCart: Shopping cart not have cart item requested");
 
         cartItems.add(cartItemRequest);
         totalAmount();

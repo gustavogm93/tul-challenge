@@ -1,7 +1,7 @@
 package com.tul.challenge.shopping.cart.services;
 
-import com.tul.challenge.config.exception.CartItemNotFoundException;
-import com.tul.challenge.config.exception.ProductNotFoundException;
+import com.tul.challenge.shopping.cart.exceptions.cart.item.CartItemNotFoundException;
+import com.tul.challenge.product.exceptions.ProductNotFoundException;
 import com.tul.challenge.product.model.Product;
 import com.tul.challenge.product.services.ProductService;
 import com.tul.challenge.shopping.cart.model.CartItem;

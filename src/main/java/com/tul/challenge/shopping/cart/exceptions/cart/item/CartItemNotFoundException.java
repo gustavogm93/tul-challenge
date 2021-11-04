@@ -1,4 +1,4 @@
-package com.tul.challenge.config.exception;
+package com.tul.challenge.shopping.cart.exceptions.cart.item;
 
 public class CartItemNotFoundException extends RuntimeException{
 

@@ -1,14 +1,12 @@
 package com.tul.challenge.product.services;
 
-import com.tul.challenge.config.exception.NotFoundException;
-import com.tul.challenge.config.exception.ProductNotFoundException;
+import com.tul.challenge.product.exceptions.ProductNotFoundException;
 import com.tul.challenge.product.repository.ProductRepository;
 import com.tul.challenge.product.model.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

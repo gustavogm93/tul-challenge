@@ -1,11 +1,10 @@
 package com.tul.challenge.product.service;
 
-import com.tul.challenge.config.exception.ProductNotFoundException;
+import com.tul.challenge.product.exceptions.ProductNotFoundException;
 import com.tul.challenge.product.model.Product;
 import com.tul.challenge.product.repository.ProductRepository;
 import com.tul.challenge.product.services.ProductService;
 import com.tul.challenge.product.services.ProductServiceImpl;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

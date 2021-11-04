@@ -47,9 +47,6 @@ public class ShoppingController {
 
         ShoppingCart shoppingCart = shoppingCartService.getShoppingCart(id);
 
-        if (shoppingCart == null){
-            return ResponseEntity.ok(null);
-        }
         return ResponseEntity.ok(shoppingCart);
     }
 

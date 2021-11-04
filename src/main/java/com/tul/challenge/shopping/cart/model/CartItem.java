@@ -7,11 +7,11 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -24,21 +24,14 @@ public class CartItem implements Serializable {
     @Type(type="uuid-char")
     private UUID id;
 
-    @OneToOne
+    @Valid
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "PRODUCT_FK"))
     private Product product;
 
     @NotNull(message = "quantity cannot be empty")
     @Positive
     private int quantity = 1;
-
-    @Column(columnDefinition = "ENUM('PENDING', 'COMPLETED')")
-    @Enumerated(EnumType.STRING)
-    private State state = State.PENDING;
-
-    /*@Column(name = "shopping_cart_id")
-    @Type(type="uuid-char")
-    private UUID shoppingCartId; */
 
     public CartItem(){
         this.id = UUID.randomUUID();
@@ -51,7 +44,19 @@ public class CartItem implements Serializable {
     public void updateCartItem(CartItem cartItem){
         this.product = cartItem.product;
         this.quantity = cartItem.quantity;
-        this.state = cartItem.state;
     }
 
+    public BigDecimal getProductPrice(){
+        return this.product.getPrice();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == null) return false;
+        if (obj == this) return true;
+        if (!(obj instanceof CartItem)) return false;
+
+        return this.id.equals(((CartItem) obj).id);
+    }
 }

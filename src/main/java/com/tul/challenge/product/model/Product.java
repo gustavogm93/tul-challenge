@@ -1,5 +1,6 @@
 package com.tul.challenge.product.model;
 
+import com.tul.challenge.shopping.cart.model.CartItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -73,5 +74,15 @@ public class Product implements Serializable {
         this.price =  this.discount ? this.price.multiply(BigDecimal.valueOf(2)) : this.price.divide(BigDecimal.valueOf(2));
 
         this.discount = discount;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (obj == null) return false;
+        if (obj == this) return true;
+        if (!(obj instanceof Product)) return false;
+
+        return this.id.equals(((Product) obj).id);
     }
 }

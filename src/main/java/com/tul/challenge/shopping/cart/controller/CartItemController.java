@@ -16,17 +16,17 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/cart")
-public class ShoppingCartController {
+public class CartItemController {
 
     CartItemService cartItemService;
 
     @Autowired
-    public ShoppingCartController(CartItemService cartItemService){
+    public CartItemController(CartItemService cartItemService){
         this.cartItemService = cartItemService;
     }
 
     @GetMapping
-    public ResponseEntity<List<CartItem>> getShoppingCart(){
+    public ResponseEntity<List<CartItem>> getCartItems(){
 
         List<CartItem> cartItems = cartItemService.listAllCartItem();
 
@@ -64,7 +64,7 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable("id") UUID id){
+    public ResponseEntity<String> deleteCartItem(@PathVariable("id") UUID id){
         if (cartItemService.deleteCartItem(id)){
             return ResponseEntity.notFound().build();
         }

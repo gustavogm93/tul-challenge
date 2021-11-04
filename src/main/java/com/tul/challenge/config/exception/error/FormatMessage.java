@@ -4,9 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.validation.BindingResult;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FormatMessage {
@@ -21,7 +20,28 @@ public class FormatMessage {
                 }).collect(Collectors.toList());
         ErrorMessage errorMessage = ErrorMessage.builder()
                 .code("01")
-                .messages(errors).build();
+                .messages(errors)
+                .date(LocalDateTime.now().toString())
+                .build();
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString="";
+        try {
+            jsonString = mapper.writeValueAsString(errorMessage);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return jsonString;
+    }
+
+    public static String toJson( String result){
+        Map<String, String> error = Map.of("Error", result);
+        List<Map<String, String>> listOfErrors = List.of(error);
+
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .code("01")
+                .messages(listOfErrors)
+                .date(LocalDateTime.now().toString())
+                .build();
         ObjectMapper mapper = new ObjectMapper();
         String jsonString="";
         try {

@@ -1,5 +1,6 @@
 package com.tul.challenge.product.services;
 
+import com.tul.challenge.config.exception.ProductNotFoundException;
 import com.tul.challenge.product.repository.ProductRepository;
 import com.tul.challenge.product.model.Product;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class ProductServiceImpl  implements ProductService {
     public boolean deleteProduct(UUID id) {
         Product productDB = getProduct(id);
         if (null == productDB){
-            return false;
+            throw new ProductNotFoundException("Product not found");
         }
         productRepository.delete(productDB);
         return true;

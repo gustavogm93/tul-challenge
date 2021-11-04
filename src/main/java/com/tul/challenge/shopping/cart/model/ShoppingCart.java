@@ -26,8 +26,7 @@ public class ShoppingCart implements Serializable {
 
     @OneToMany(targetEntity = CartItem.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
-    @Valid
-    private Set<CartItem> cartItems;
+    private Set<@Valid CartItem> cartItems;
 
     @Transient
     private BigDecimal totalPrice;

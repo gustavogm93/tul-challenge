@@ -10,6 +10,6 @@ public interface CartItemService {
     public List<CartItem> listAllCartItem();
     public CartItem getCartItem(UUID id);
     public CartItem createCartItem(CartItem cartItem);
-    public CartItem updateCartItem(CartItem cartItem);
+    public CartItem updateCartItem(UUID id, CartItem cartItem);
     public boolean deleteCartItem(UUID id);
 }

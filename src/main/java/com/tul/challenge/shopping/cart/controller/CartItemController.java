@@ -55,11 +55,8 @@ public class CartItemController {
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<CartItem> updateCartItem(@PathVariable("id") UUID id, @Valid @RequestBody CartItem cartItem){
-        cartItem.setId(id);
-        CartItem cartItemDB =  cartItemService.updateCartItem(cartItem);
-        if (cartItemDB == null){
-            return ResponseEntity.notFound().build();
-        }
+        CartItem cartItemDB =  cartItemService.updateCartItem(id, cartItem);
+
         return ResponseEntity.ok(cartItemDB);
     }
 

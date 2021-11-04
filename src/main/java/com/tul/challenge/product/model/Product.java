@@ -1,6 +1,7 @@
 package com.tul.challenge.product.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.extern.jackson.Jacksonized;
 import org.hibernate.annotations.GenericGenerator;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @Entity
 @Jacksonized
 @AllArgsConstructor
+@Builder
 @Table(name = "Product")
 public class Product implements Serializable {
 
@@ -47,14 +49,14 @@ public class Product implements Serializable {
     public Product() {}
     public Product(UUID id) {this.id = id; }
 
-    public void updateProduct(Product product) {
+    public void updateProduct(Product productRequest) {
         BigDecimal oldPrice = this.price;
 
-        this.name = product.getName();
-        this.description = product.getDescription();
-        this.price = product.getPrice();
-        this.SKU = product.getSKU();
-        this.updateDiscount(product.isDiscount(), oldPrice);
+        this.name = productRequest.getName();
+        this.description = productRequest.getDescription();
+        this.price = productRequest.getPrice();
+        this.SKU = productRequest.getSKU();
+        this.updateDiscount(productRequest.isDiscount(), oldPrice);
     }
 
     private void updateDiscount(boolean discount, BigDecimal oldPrice){

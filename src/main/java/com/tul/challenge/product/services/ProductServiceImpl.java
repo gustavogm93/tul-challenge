@@ -1,5 +1,6 @@
 package com.tul.challenge.product.services;
 
+import com.tul.challenge.config.exception.NotFoundException;
 import com.tul.challenge.config.exception.ProductNotFoundException;
 import com.tul.challenge.product.repository.ProductRepository;
 import com.tul.challenge.product.model.Product;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,7 +25,7 @@ public class ProductServiceImpl  implements ProductService {
 
     @Override
     public Product getProduct(UUID id) {
-        return productRepository.findById(id).orElse(null);
+        return productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("Product not found"));
     }
 
     @Override
@@ -31,13 +33,10 @@ public class ProductServiceImpl  implements ProductService {
         return productRepository.save(product);
     }
 
-    @Override
-    public Product updateProduct(Product product) {
-        Product productDB = getProduct(product.getId());
-        if (null == productDB){
-            return null;
-        }
-        productDB.updateProduct(product);
+    public Product updateProduct(UUID id, Product productRequest) {
+        Product productDB = getProduct(id);
+
+        productDB.updateProduct(productRequest);
 
         return productRepository.save(productDB);
     }
@@ -45,9 +44,7 @@ public class ProductServiceImpl  implements ProductService {
     @Override
     public boolean deleteProduct(UUID id) {
         Product productDB = getProduct(id);
-        if (null == productDB){
-            throw new ProductNotFoundException("Product not found");
-        }
+
         productRepository.delete(productDB);
         return true;
     }

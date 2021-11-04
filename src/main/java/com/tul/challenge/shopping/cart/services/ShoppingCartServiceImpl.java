@@ -76,7 +76,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
 
         shoppingCartRepository.save(shoppingCart);
 
-        return shoppingCart.getTotalPrice();
+        return shoppingCart.getTotalAmount();
     }
 
 

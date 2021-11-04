@@ -1,10 +1,14 @@
 package com.tul.challenge.shopping.cart.model;
 
+import com.tul.challenge.config.exception.ShoppingCartNotHaveCartItemException;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.*;
 import javax.validation.Valid;
 import java.io.Serializable;
@@ -29,7 +33,7 @@ public class ShoppingCart implements Serializable {
     private Set<@Valid CartItem> cartItems;
 
     @Transient
-    private BigDecimal totalPrice;
+    private BigDecimal totalAmount;
 
     @Column(columnDefinition = "ENUM('PENDING', 'COMPLETED')")
     @Enumerated(EnumType.STRING)
@@ -43,20 +47,45 @@ public class ShoppingCart implements Serializable {
         return this.cartItems.add(cartItem);
     }
 
+    public ShoppingCart(UUID id, Set<@Valid CartItem> cartItems, State state) {
+        this.id = id;
+        this.cartItems = cartItems;
+        this.state = state;
+        totalAmount();
+    }
+
     @PostLoad
     @PostUpdate
-    @PostRemove
-    public void TotalPrice(){
-        this.totalPrice = cartItems.stream().map(CartItem::getProductPrice).reduce(BigDecimal.valueOf(0), BigDecimal::add);
+    public void totalAmount(){
+        if(cartItems == null){
+            this.totalAmount = BigDecimal.ONE;
+            return;
+        }
+        this.totalAmount = cartItems.stream().map(CartItem::getTotalAmountInCartItem).reduce(BigDecimal.valueOf(0), BigDecimal::add);
     }
 
     public boolean removeCartItem(CartItem cartItemId){
-        return cartItems.remove(cartItemId);
+        boolean response = cartItems.remove(cartItemId);
+        totalAmount();
+
+        return response;
     }
 
-    public boolean updateCartItem(CartItem cartItemId) {
-        cartItems.remove(cartItemId);
-        return cartItems.add(cartItemId);
+    public boolean updateCartItem(CartItem cartItemRequest) {
+        boolean hasCartItem = cartItems.remove(cartItemRequest);
+
+        if(!hasCartItem)
+        throw new ShoppingCartNotHaveCartItemException("Shopping cart not have cart item requested");
+
+        cartItems.add(cartItemRequest);
+        totalAmount();
+
+        return true;
+    }
+
+    public void setCartItems( Set<@Valid CartItem> cartItems) {
+        this.cartItems = cartItems;
+        totalAmount();
     }
 
 

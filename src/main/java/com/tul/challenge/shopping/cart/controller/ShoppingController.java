@@ -31,15 +31,15 @@ public class ShoppingController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ShoppingCart>> listShoppingCart(){
+    public ResponseEntity<?> listShoppingCart(){
 
         List<ShoppingCart> shoppingCartList = shoppingCartService.listAllShoppingCart();
 
-        if (shoppingCartList.isEmpty()){
-            return ResponseEntity.ok(null);
+        if (shoppingCartList.isEmpty()) {
+            return ResponseEntity.ok().body("There are no shopping carts here");
         }
-        return ResponseEntity.ok(shoppingCartList);
 
+        return ResponseEntity.ok(shoppingCartList);
     }
 
     @GetMapping("/{id}")

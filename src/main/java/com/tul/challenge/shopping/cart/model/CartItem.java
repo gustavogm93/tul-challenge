@@ -1,8 +1,10 @@
 package com.tul.challenge.shopping.cart.model;
 
 
+import com.tul.challenge.config.exception.UpdateDifferentCartItemException;
 import com.tul.challenge.product.model.Product;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 
@@ -17,6 +19,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "Cart_Item")
 @Data
+@Builder
 @AllArgsConstructor
 public class CartItem implements Serializable {
 
@@ -37,17 +40,18 @@ public class CartItem implements Serializable {
         this.id = UUID.randomUUID();
     }
 
-    public static CartItem build(){
-        return new CartItem();
+    public void updateCartItem(CartItem cartItemRequest){
+        if(this.id.compareTo(cartItemRequest.getId()) != 0)
+            throw new UpdateDifferentCartItemException("Your Cart item Id Path is different from cart item id request body");
+
+        this.product = cartItemRequest.product;
+        this.quantity = cartItemRequest.quantity;
     }
 
-    public void updateCartItem(CartItem cartItem){
-        this.product = cartItem.product;
-        this.quantity = cartItem.quantity;
-    }
+    public BigDecimal getTotalAmountInCartItem(){
+        if(this.product == null) return BigDecimal.ONE;
 
-    public BigDecimal getProductPrice(){
-        return this.product.getPrice();
+        return this.product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 
     @Override

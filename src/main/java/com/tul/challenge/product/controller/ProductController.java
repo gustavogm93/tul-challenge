@@ -25,12 +25,12 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> listProduct(){
+    public ResponseEntity<?> listProduct(){
 
         List<Product> products = productService.listAllProduct();
 
         if (products.isEmpty()){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().body("There are no products here");
         }
         return ResponseEntity.ok(products);
         }
@@ -38,9 +38,7 @@ public class ProductController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<Product> getProduct(@PathVariable("id") UUID id) {
         Product product =  productService.getProduct(id);
-        if (product == null){
-            return ResponseEntity.notFound().build();
-        }
+
         return ResponseEntity.ok(product);
     }
 
@@ -54,9 +52,8 @@ public class ProductController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable("id") UUID id, @Valid @RequestBody Product product){
-        product.setId(id);
-        Product productDB =  productService.updateProduct(product);
+    public ResponseEntity<Product> updateProduct(@PathVariable("id") UUID id, @Valid @RequestBody Product productRequest){
+        Product productDB =  productService.updateProduct(id, productRequest);
         if (productDB == null){
             return ResponseEntity.notFound().build();
         }

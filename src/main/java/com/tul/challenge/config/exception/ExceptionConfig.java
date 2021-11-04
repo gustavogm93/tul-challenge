@@ -1,6 +1,7 @@
 package com.tul.challenge.config.exception;
 
 import com.tul.challenge.config.exception.error.FormatMessage;
+import com.tul.challenge.product.services.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -26,6 +27,12 @@ public class ExceptionConfig {
     @ExceptionHandler(DuplicateCartItemException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> duplicateCartItem(Exception e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(FormatMessage.toJson(e.getMessage()));
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<?> productNotFound(Exception e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(FormatMessage.toJson(e.getMessage()));
     }
 

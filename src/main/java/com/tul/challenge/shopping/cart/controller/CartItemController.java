@@ -54,7 +54,11 @@ public class CartItemController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CartItem> updateCartItem(@PathVariable("id") UUID id, @Valid @RequestBody CartItem cartItem){
+    public ResponseEntity<CartItem> updateCartItem(@PathVariable("id") UUID id, @Valid @RequestBody CartItem cartItem, BindingResult result){
+        if (result.hasErrors()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, FormatMessage.toJson(result));
+        }
+
         CartItem cartItemDB =  cartItemService.updateCartItem(id, cartItem);
 
         return ResponseEntity.ok(cartItemDB);

@@ -2,10 +2,7 @@ package com.tul.challenge.product.model;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -56,7 +53,18 @@ public class ProductTest {
                 .build();
     }
 
-    public Product getProductByDiscountMock(boolean discount){
+    public static Product getProductWithDiscountMock(){
+        return Product.builder()
+                .id(UUID.randomUUID())
+                .name("ProductMock")
+                .price(BigDecimal.valueOf(12.50))
+                .description("This is a ProductMock")
+                .SKU("MOCK-1")
+                .discount(true)
+                .build();
+    }
+
+    public static Product getProductByDiscountMock(boolean discount){
         Product productByDiscountMock = getProductMock();
         productByDiscountMock.setDiscount(discount);
 

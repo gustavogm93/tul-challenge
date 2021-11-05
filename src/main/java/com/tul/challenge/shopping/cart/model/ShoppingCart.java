@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -41,7 +42,9 @@ public class ShoppingCart implements Serializable {
     }
 
     public boolean addCartItem(CartItem cartItem){
-        return this.cartItems.add(cartItem);
+         boolean response = this.cartItems.add(cartItem);
+        totalAmount();
+        return response;
     }
 
     public ShoppingCart(Set<@Valid CartItem> cartItems, State state) {
@@ -60,9 +63,11 @@ public class ShoppingCart implements Serializable {
 
     @PostLoad
     @PostUpdate
+    @PostMapping
+    @PostPersist
     public void totalAmount(){
         if(cartItems == null){
-            this.totalAmount = BigDecimal.ONE;
+            this.totalAmount = BigDecimal.ZERO;
             return;
         }
         this.totalAmount = cartItems.stream().map(CartItem::getTotalAmountInCartItem).reduce(BigDecimal.valueOf(0), BigDecimal::add);

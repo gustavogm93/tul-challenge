@@ -52,11 +52,13 @@ public class ProductController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable("id") UUID id, @Valid @RequestBody Product productRequest){
-        Product productDB =  productService.updateProduct(id, productRequest);
-        if (productDB == null){
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Product> updateProduct(@PathVariable("id") UUID id, @Valid @RequestBody Product productRequest, BindingResult result){
+        if (result.hasErrors()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, FormatMessage.toJson(result));
         }
+
+        Product productDB =  productService.updateProduct(id, productRequest);
+
         return ResponseEntity.ok(productDB);
     }
 

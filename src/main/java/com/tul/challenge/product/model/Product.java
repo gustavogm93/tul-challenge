@@ -1,15 +1,16 @@
 package com.tul.challenge.product.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.jackson.Jacksonized;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -17,9 +18,9 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Jacksonized
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "Product")
 public class Product implements Serializable {
 
@@ -32,11 +33,12 @@ public class Product implements Serializable {
     )
     private UUID id;
 
-    @NotEmpty(message = "name cannot not be empty")
+    @NotEmpty(message = "name cannot be empty")
     @Column(name="name")
     private String name;
 
-    @Digits(integer = 6, fraction = 2, message = "price must be 2 fraction decimal")
+    @NotNull(message = "price cannot not be empty")
+    @Digits(integer = 6, fraction = 3, message = "price must be 3 fraction decimal")
     @Positive(message = "price must be positive")
     private BigDecimal price;
 
@@ -55,6 +57,7 @@ public class Product implements Serializable {
         this.description = productRequest.getDescription();
         this.price = productRequest.getPrice();
         this.SKU = productRequest.getSKU();
+
         this.updateDiscount(productRequest.isDiscount(), oldPrice);
     }
 

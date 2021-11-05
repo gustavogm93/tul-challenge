@@ -47,7 +47,7 @@ public class ShoppingCartTest {
         ShoppingCart shoppingCartMock = getShoppingCartMock();
         shoppingCartMock.setCartItems(null);
 
-        assertThat(shoppingCartMock.getTotalAmount()).isEqualByComparingTo(BigDecimal.ONE);
+        assertThat(shoppingCartMock.getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
     }
 
     public static ShoppingCart getShoppingCartMock(){

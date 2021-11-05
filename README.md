@@ -1,13 +1,14 @@
-# Spring Boot MySQL Base Project
+# Tul-Challenge
 
-This application was developed to demonstrate Spring Boot with MySQL with simple API.
+This application was developed to solve Tul's Challenge.
 
 Technologies Used
 
-- Spring Boot 2.4.1
+- Spring Boot
 - Spring Data JPA
 - Lombok
 - MySQL
+
 
 How to Run this application
 
@@ -28,10 +29,5 @@ $ ./gradlew clean build
 Then start the JAR file using java
 
 ```shell
-$ java -jar build/libs/spring-boot-mysql-base-project-0.0.1-SNAPSHOT.jar
+$ java -jar build/libs/com.tul.challenge-0.0.1-SNAPSHOT.jar
 ```
-
-### Related Articles
-
-- [Docker Compose For Spring Boot with MySQL](https://javatodev.com/docker-compose-for-spring-boot-with-mysql/)
-- [Docker Compose For Spring Boot with MariaDB](https://javatodev.com/docker-compose-for-spring-boot-with-mariadb/)

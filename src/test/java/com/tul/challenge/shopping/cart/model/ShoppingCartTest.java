@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 import static com.tul.challenge.shopping.cart.model.CartItemTest.getSetOfCartItemsMock;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,7 +51,7 @@ public class ShoppingCartTest {
     }
 
     public static ShoppingCart getShoppingCartMock(){
-        return new ShoppingCart(UUID.randomUUID(), getSetOfCartItemsMock(), State.PENDING);
+        return new ShoppingCart(getSetOfCartItemsMock(), State.PENDING);
     }
 
 

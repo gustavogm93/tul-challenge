@@ -55,7 +55,7 @@ public class ShoppingController {
 
         ShoppingCart shoppingCart = shoppingCartService.createShoppingCart();
 
-        return ResponseEntity.ok(shoppingCart);
+        return ResponseEntity.status(HttpStatus.CREATED).body(shoppingCart);
     }
 
     @PostMapping("/{id}")

@@ -44,10 +44,17 @@ public class ShoppingCart implements Serializable {
         return this.cartItems.add(cartItem);
     }
 
-    public ShoppingCart(UUID id, Set<@Valid CartItem> cartItems, State state) {
-        this.id = id;
+    public ShoppingCart(Set<@Valid CartItem> cartItems, State state) {
+        this.id = UUID.randomUUID();
         this.cartItems = cartItems;
         this.state = state;
+        totalAmount();
+    }
+
+    public ShoppingCart(Set<@Valid CartItem> cartItems) {
+        this.id = UUID.randomUUID();
+        this.state = State.PENDING;
+        this.cartItems = cartItems;
         totalAmount();
     }
 

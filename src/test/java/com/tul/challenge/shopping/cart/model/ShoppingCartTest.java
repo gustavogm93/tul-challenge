@@ -51,7 +51,7 @@ public class ShoppingCartTest {
         assertThat(shoppingCartMock.getTotalAmount()).isEqualByComparingTo(BigDecimal.ONE);
     }
 
-    public ShoppingCart getShoppingCartMock(){
+    public static ShoppingCart getShoppingCartMock(){
         return new ShoppingCart(UUID.randomUUID(), getSetOfCartItemsMock(), State.PENDING);
     }
 

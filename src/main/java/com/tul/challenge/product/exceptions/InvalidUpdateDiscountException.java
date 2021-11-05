@@ -1,4 +1,4 @@
-package com.tul.challenge.config.exception;
+package com.tul.challenge.product.exceptions;
 
 public class InvalidUpdateDiscountException extends RuntimeException {
 

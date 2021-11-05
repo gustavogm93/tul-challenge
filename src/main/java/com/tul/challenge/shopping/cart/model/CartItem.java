@@ -48,6 +48,7 @@ public class CartItem implements Serializable {
         this.quantity = cartItemRequest.quantity;
     }
 
+    @Transient
     public BigDecimal getTotalAmountInCartItem(){
         if(this.product == null) return BigDecimal.ONE;
 

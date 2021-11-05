@@ -1,0 +1,320 @@
+{
+	"info": {
+		"_postman_id": "6167ef84-9cb2-4147-8a00-049f0879caf2",
+		"name": "Tul-Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "get Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL}}api/product/",
+							"host": [
+								"{{LOCAL}}api"
+							],
+							"path": [
+								"product",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n            \"id\": \"123e4567-e89b-12d3-a456-426614174090\",\r\n             \"name\": \"Pintura\",\r\n            \"discount\": false,\r\n               \"description\": \"Arena en balde\",\r\n                           \"sku\": \"CE-52\"\r\n        }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL}}api/product/",
+							"host": [
+								"{{LOCAL}}api"
+							],
+							"path": [
+								"product",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "   {\r\n        \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n        \"name\": \"Cemento\",\r\n        \"price\": 540.50,\r\n        \"description\": \"cemento en balde\",\r\n        \"discount\": true,\r\n        \"sku\": \"CRE-52\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL}}api/product/123e4567-e89b-12d3-a456-426614174001",
+							"host": [
+								"{{LOCAL}}api"
+							],
+							"path": [
+								"product",
+								"123e4567-e89b-12d3-a456-426614174001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL}}api/product/123e4567-e89b-12d3-a456-426614174000",
+							"host": [
+								"{{LOCAL}}api"
+							],
+							"path": [
+								"product",
+								"123e4567-e89b-12d3-a456-426614174000"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CartItem",
+			"item": [
+				{
+					"name": "Create CartItem",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n        \"id\": \"223e4567-e89b-12d3-a456-426614174056\",\r\n        \"product\": {\r\n            \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n            \"name\": \"Pintura\",\r\n            \"price\": 200.10,\r\n            \"description\": \"pintura en balde\",\r\n            \"discount\": true,\r\n            \"sku\": \"PRA-52\"\r\n        },\r\n        \"quantity\": 1,\r\n        \"totalAmountInCartItem\": 200.10\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL}}api/cart/",
+							"host": [
+								"{{LOCAL}}api"
+							],
+							"path": [
+								"cart",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update CartItem",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n                \"id\": \"223e4567-e89b-12d3-a456-426614174056\",\r\n                \"product\": {\r\n                    \"id\": \"123e4567-e89b-12d3-a456-426614174001\",\r\n                    \"name\": \"Pintura\",\r\n                    \"price\": 200.10,\r\n                    \"description\": \"pintura en balde\",\r\n                    \"discount\": true,\r\n                    \"sku\": \"PRA-52\"\r\n                },\r\n                \"quantity\": 3,\r\n                \"totalAmountInCartItem\": 200.10\r\n            }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL}}api/cart/223e4567-e89b-12d3-a456-426614174056",
+							"host": [
+								"{{LOCAL}}api"
+							],
+							"path": [
+								"cart",
+								"223e4567-e89b-12d3-a456-426614174056"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCartItem",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL}}api/cart/",
+							"host": [
+								"{{LOCAL}}api"
+							],
+							"path": [
+								"cart",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ShoppingCart",
+			"item": [
+				{
+					"name": "Shopping-cart_create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL}}api/shopping/create",
+							"host": [
+								"{{LOCAL}}api"
+							],
+							"path": [
+								"shopping",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Shopping Cart Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL}}api/shopping/",
+							"host": [
+								"{{LOCAL}}api"
+							],
+							"path": [
+								"shopping",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add cart item to Shopping",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": \"223e4567-e89b-12d3-a456-426614174053\",\r\n        \"product\": {\r\n            \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n            \"name\": \"Pintura\",\r\n            \"price\": 200.10,\r\n            \"description\": \"pintura en balde\",\r\n            \"discount\": true,\r\n            \"sku\": \"PRA-52\"\r\n        },\r\n        \"quantity\": 1,\r\n        \"totalAmountInCartItem\": 200.10\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL}}api/shopping/6d65de49-3b24-4db3-b69d-58e58d194fed",
+							"host": [
+								"{{LOCAL}}api"
+							],
+							"path": [
+								"shopping",
+								"6d65de49-3b24-4db3-b69d-58e58d194fed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Cartitem in Shopping Cart",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n                \"id\": \"223e4567-e89b-12d3-a456-426614174053\",\r\n                \"product\": {\r\n                    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\r\n                    \"name\": \"Pintura\",\r\n                    \"price\": 990.10,\r\n                    \"description\": \"pintura en balde\",\r\n                    \"discount\": true,\r\n                    \"sku\": \"PRA-52\"\r\n                },\r\n                \"quantity\": 1,\r\n                \"productPrice\": 990.10\r\n            }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL}}api/shopping/ab96f5f6-8c91-4336-9699-d8d59be54617",
+							"host": [
+								"{{LOCAL}}api"
+							],
+							"path": [
+								"shopping",
+								"ab96f5f6-8c91-4336-9699-d8d59be54617"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout shoppingCart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL}}api/shopping/checkout/8162e091-5289-4898-a41f-97641e1c852a",
+							"host": [
+								"{{LOCAL}}api"
+							],
+							"path": [
+								"shopping",
+								"checkout",
+								"8162e091-5289-4898-a41f-97641e1c852a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

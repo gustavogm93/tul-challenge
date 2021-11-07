@@ -3,6 +3,7 @@ package com.tul.challenge.product.controller;
 import com.tul.challenge.config.exception.error.FormatMessage;
 import com.tul.challenge.product.model.Product;
 import com.tul.challenge.product.services.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.util.*;
 
+@Slf4j
 @RestController
 @RequestMapping("api/product")
 public class ProductController {

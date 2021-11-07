@@ -1,8 +1,9 @@
 package com.tul.challenge.shopping.cart.model;
 
 
-import com.tul.challenge.shopping.cart.exceptions.cart.item.UpdateDifferentCartItemException;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.tul.challenge.product.model.Product;
+import com.tul.challenge.shopping.cart.exceptions.cart.item.UpdateDifferentCartItemException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,12 +30,18 @@ public class CartItem implements Serializable {
 
     @Valid
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "PRODUCT_FK"))
+    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "PRODUCT_FK"), unique = true)
     private Product product;
 
-    @NotNull(message = "quantity cannot be empty")
+    @NotNull
     @Positive
     private int quantity = 1;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shopping_cart_id" , referencedColumnName = "id", nullable = true)
+    @JsonBackReference
+    private ShoppingCart shoppingCart;
+
 
     public CartItem(){
         this.id = UUID.randomUUID();

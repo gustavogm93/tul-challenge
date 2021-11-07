@@ -26,13 +26,14 @@ public class CartItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CartItem>> getCartItems(){
+    public ResponseEntity<?> getCartItems(){
 
         List<CartItem> cartItems = cartItemService.listAllCartItem();
 
         if (cartItems.isEmpty()){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().body("There are no cart items here");
         }
+
         return ResponseEntity.ok(cartItems);
     }
 

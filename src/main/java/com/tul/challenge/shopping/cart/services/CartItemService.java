@@ -12,4 +12,5 @@ public interface CartItemService {
     public CartItem createCartItem(CartItem cartItem);
     public CartItem updateCartItem(UUID id, CartItem cartItem);
     public boolean deleteCartItem(UUID id);
+    public boolean deleteByShoppingCartId(UUID id);
 }

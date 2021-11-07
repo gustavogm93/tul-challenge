@@ -1,6 +1,5 @@
 package com.tul.challenge.product.service;
 
-import com.tul.challenge.product.exceptions.ProductNotFoundException;
 import com.tul.challenge.product.model.Product;
 import com.tul.challenge.product.repository.ProductRepository;
 import com.tul.challenge.product.services.ProductService;

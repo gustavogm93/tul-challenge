@@ -3,6 +3,7 @@ package com.tul.challenge.shopping.cart.services;
 import com.tul.challenge.config.exception.CustomNotFoundException;
 import com.tul.challenge.product.model.Product;
 import com.tul.challenge.product.services.ProductService;
+import com.tul.challenge.shopping.cart.exceptions.cart.item.AnotherCartItemHasTheSameProductException;
 import com.tul.challenge.shopping.cart.exceptions.cart.item.DuplicateCartItemException;
 import com.tul.challenge.shopping.cart.model.CartItem;
 import com.tul.challenge.shopping.cart.repository.CartItemRepository;
@@ -30,11 +31,15 @@ public class CartItemServiceImpl implements CartItemService {
 
     public CartItem createCartItem(CartItem cartItem) {
 
+            //TODO: ver si es necesario, cuando hace el save genera un id diferente, el id no tenerlo en cuenta
             Optional<CartItem> cartItemRepeated = cartItemRepository.findById(cartItem.getId());
             if (cartItemRepeated.isPresent())
                 throw new DuplicateCartItemException(String.format("CartItem with id %s already exists", cartItem.getId()));
 
             Product productDB = productService.getProduct(cartItem.getProduct().getId());
+
+            if(cartItemRepository.getCartItemByProductId(productDB.getId()) != null)
+            throw new AnotherCartItemHasTheSameProductException();
 
             cartItem.setProduct(productDB);
 
@@ -43,19 +48,21 @@ public class CartItemServiceImpl implements CartItemService {
 
     public CartItem updateCartItem(UUID id, CartItem cartItemRequest) {
 
-        //try {
             CartItem cartItemDB = getCartItem(id);
 
             Product productDB = productService.getProduct(cartItemRequest.getProduct().getId());
+
+            CartItem cartItemWithSameProduct = cartItemRepository.getCartItemByProductId(productDB.getId());
+
+            if(cartItemWithSameProduct.getId() != cartItemDB.getId())
+            throw new AnotherCartItemHasTheSameProductException();
 
             cartItemRequest.setProduct(productDB);
 
             cartItemDB.updateCartItem(cartItemRequest);
 
             return cartItemRepository.save(cartItemDB);
-        /*}catch (ConstraintViolationException exception) {
-            throw new AnotherCartItemHasTheSameProductException();
-        }*/
+
     }
 
     public boolean deleteCartItem(UUID id) {

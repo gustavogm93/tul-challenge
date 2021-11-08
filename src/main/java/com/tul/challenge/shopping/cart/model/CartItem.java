@@ -7,6 +7,8 @@ import com.tul.challenge.shopping.cart.exceptions.cart.item.UpdateDifferentCartI
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -30,7 +32,8 @@ public class CartItem implements Serializable {
 
     @Valid
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "PRODUCT_FK"), unique = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false, unique = true)
     private Product product;
 
     @NotNull

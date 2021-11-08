@@ -33,8 +33,7 @@ public class ShoppingCart implements Serializable {
     @OneToMany(
             mappedBy = "shoppingCart",
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            orphanRemoval = true
+            fetch = FetchType.LAZY
     )
     @JsonManagedReference
     private Set<@Valid CartItem> cartItems;
@@ -49,7 +48,6 @@ public class ShoppingCart implements Serializable {
     public ShoppingCart(UUID id) {
         this.id = id;
     }
-
 
 
     public ShoppingCart(Set<@Valid CartItem> cartItems, State state) {
@@ -69,7 +67,7 @@ public class ShoppingCart implements Serializable {
     @PostLoad
     @PostUpdate
     @PostMapping
-    @PostPersist
+    @PostPersist //TODO: check if is necessary
     public void totalAmount(){
         if(cartItems == null){
             this.totalAmount = BigDecimal.ZERO;

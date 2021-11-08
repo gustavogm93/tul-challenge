@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -16,7 +17,7 @@ public interface CartItemRepository  extends JpaRepository<CartItem, UUID> {
     List<CartItem> findByProduct(Product product);
 
     @Query("SELECT ci FROM CartItem ci WHERE ci.product.id =:productId")
-    CartItem getCartItemByProductId(@Param("productId") UUID productId);
+    Optional<CartItem> getCartItemByProductId(@Param("productId") UUID productId);
 
     @Modifying
     @Query("DELETE FROM CartItem ci WHERE ci.shoppingCart.id =:shoppingId")

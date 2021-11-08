@@ -51,7 +51,7 @@ public class CartItem implements Serializable {
     }
 
     public void updateCartItem(CartItem cartItemRequest){
-        if(this.id.compareTo(cartItemRequest.getId()) != 0)
+        if(this.id.compareTo(cartItemRequest.getId()) != 0) //TODO: check if this is necessary
             throw new UpdateDifferentCartItemException("Your Cart item Id Path is different from cart item id request body");
 
         this.product = cartItemRequest.product;

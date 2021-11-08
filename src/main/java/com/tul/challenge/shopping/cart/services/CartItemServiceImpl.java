@@ -31,14 +31,13 @@ public class CartItemServiceImpl implements CartItemService {
 
     public CartItem createCartItem(CartItem cartItem) {
 
-            //TODO: ver si es necesario, cuando hace el save genera un id diferente, el id no tenerlo en cuenta
             Optional<CartItem> cartItemRepeated = cartItemRepository.findById(cartItem.getId());
             if (cartItemRepeated.isPresent())
                 throw new DuplicateCartItemException(String.format("CartItem with id %s already exists", cartItem.getId()));
 
             Product productDB = productService.getProduct(cartItem.getProduct().getId());
 
-            if(cartItemRepository.getCartItemByProductId(productDB.getId()) != null)
+            if(checkIfExistAnotherCartItemWithSameProduct(productDB.getId()))
             throw new AnotherCartItemHasTheSameProductException();
 
             cartItem.setProduct(productDB);
@@ -52,9 +51,9 @@ public class CartItemServiceImpl implements CartItemService {
 
             Product productDB = productService.getProduct(cartItemRequest.getProduct().getId());
 
-            CartItem cartItemWithSameProduct = cartItemRepository.getCartItemByProductId(productDB.getId());
+            Optional<CartItem> cartItemWithSameProduct = getCartItemByProductId(productDB.getId());
 
-            if(cartItemWithSameProduct.getId() != cartItemDB.getId())
+            if(cartItemWithSameProduct.isPresent() && cartItemWithSameProduct.get().getId() != cartItemDB.getId())
             throw new AnotherCartItemHasTheSameProductException();
 
             cartItemRequest.setProduct(productDB);
@@ -63,6 +62,16 @@ public class CartItemServiceImpl implements CartItemService {
 
             return cartItemRepository.save(cartItemDB);
 
+    }
+
+    private Optional<CartItem> getCartItemByProductId(UUID productId) {
+        return cartItemRepository.getCartItemByProductId(productId);
+    }
+
+    private boolean checkIfExistAnotherCartItemWithSameProduct(UUID productId) {
+        Optional<CartItem> cartItemWithSameProduct = getCartItemByProductId(productId);
+
+        return cartItemWithSameProduct.isPresent();
     }
 
     public boolean deleteCartItem(UUID id) {
@@ -76,4 +85,5 @@ public class CartItemServiceImpl implements CartItemService {
         cartItemRepository.deleteCartItemsByShoppingCartId(shoppingCartId);
         return true;
     }
+
 }

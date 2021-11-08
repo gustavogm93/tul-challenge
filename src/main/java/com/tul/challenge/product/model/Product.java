@@ -64,7 +64,8 @@ public class Product implements Serializable {
             return;
         }
         //price distinct no update
-        this.price =  this.discount ? this.price.multiply(BigDecimal.valueOf(2)) : this.price.divide(BigDecimal.valueOf(2));
+        BigDecimal discountStatic = BigDecimal.valueOf(2);
+        this.price =  this.discount ? this.price.multiply(discountStatic) : this.price.divide(discountStatic);
 
         this.discount = discount;
     }

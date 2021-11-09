@@ -1,21 +1,20 @@
 package com.tul.challenge.shopping.cart.services;
 
-import com.tul.challenge.config.exception.*;
-import com.tul.challenge.shopping.cart.exceptions.cart.item.DuplicateCartItemException;
-import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartEmptyException;
-import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartHasStateCompletedException;
-import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartNotFoundException;
+import com.tul.challenge.config.exception.CustomNotFoundException;
+import com.tul.challenge.shopping.cart.exceptions.cart.item.SomeCartItemNotExist;
 import com.tul.challenge.shopping.cart.model.CartItem;
 import com.tul.challenge.shopping.cart.model.ShoppingCart;
 import com.tul.challenge.shopping.cart.model.State;
 import com.tul.challenge.shopping.cart.repository.ShoppingCartRepository;
-import com.tul.challenge.shopping.cart.utils.ValidateTool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +29,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
     }
 
     public ShoppingCart getShoppingCart(UUID id)  {
-        return shoppingCartRepository.findById(id).orElseThrow(()-> new ShoppingCartNotFoundException("Shopping Cart not found"));
+        return shoppingCartRepository.findById(id).orElseThrow(()-> new CustomNotFoundException(ShoppingCart.class));
     }
 
     public ShoppingCart createShoppingCart(ShoppingCart shoppingCart) {
@@ -45,75 +44,68 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
     public ShoppingCart addCartItemInShoppingCart(UUID shoppingCartId, CartItem cartItem) {
 
         ShoppingCart shoppingCart = this.getShoppingCart(shoppingCartId);
+
         CartItem cartItemDB = cartItemService.getCartItem(cartItem.getId());
 
-        if (cartItemDB == null)
-            throw new NotFoundException("cart item not found");
+        cartItemDB.setShoppingCart(shoppingCart);
 
-        if (shoppingCart == null)
-            throw new NotFoundException("shopping Cart not found");
-
-        if(!shoppingCart.addCartItem(cartItemDB))
-            throw new DuplicateCartItemException("duplicate cart item");
+        shoppingCart.addCartItem(cartItemDB);
 
         shoppingCartRepository.save(shoppingCart);
 
         return shoppingCart;
     }
 
+    @Transactional
     public BigDecimal checkoutShoppingCart(UUID shoppingCartId) {
 
         ShoppingCart shoppingCart = this.getShoppingCart(shoppingCartId);
 
-        ValidateTool.shoppingCartIsNull(shoppingCart);
+        shoppingCart.shoppingCartStateIsCompleted();
 
-        if (shoppingCart.getState() == State.COMPLETED)
-            throw new ShoppingCartHasStateCompletedException("Shopping Cart is currently completed");
-
-        if( shoppingCart.getCartItems() == null)
-            throw new ShoppingCartEmptyException("Checkout Shopping Cart: Shopping Cart doesn't have cart items");
+        shoppingCart.validateShoppingCartNotEmpty();
 
         shoppingCart.setState(State.COMPLETED);
+        BigDecimal totalAmount = shoppingCart.getTotalAmount();
+
+        cartItemService.deleteByShoppingCartId(shoppingCart.getId());
 
         shoppingCartRepository.save(shoppingCart);
 
-        return shoppingCart.getTotalAmount();
+        return totalAmount;
     }
 
 
     public boolean deleteCartItemInShoppingCart(UUID id, CartItem cartItem) {
         ShoppingCart shoppingCart = this.getShoppingCart(id);
+
         CartItem cartItemDB = cartItemService.getCartItem(cartItem.getId());
 
-        if (cartItemDB == null)
-            throw new NotFoundException("cart item not found");
+        shoppingCart.removeCartItem(cartItemDB);
 
-        if (shoppingCart == null)
-            throw new NotFoundException("shopping Cart not found");
-
-        if(!shoppingCart.removeCartItem(cartItemDB))
-            throw new NotFoundException("Shopping cart doesn't have cart item");
-
-        shoppingCartRepository.save(shoppingCart);
+        shoppingCartRepository.saveAndFlush(shoppingCart);
 
         return true;
-
     }
 
+    //improve with List to List relationship, grouping by id and updating every cart.
+    public boolean updateCartItemInShoppingCart(UUID id, Set<CartItem> cartItemSet) {
 
-    public boolean updateCartItemInShoppingCart(UUID id, CartItem cartItem) {
+        List<UUID> ids = cartItemSet.stream().map(CartItem::getId).collect(Collectors.toList());
+
+        Set<CartItem> cartItemsDB = cartItemService.getCartItemsById(ids);
+
+        //TODO: improve this because can not exist some cart item
+        if(cartItemsDB.size() != cartItemSet.size()){
+            throw new SomeCartItemNotExist();
+        }
 
         ShoppingCart shoppingCart = this.getShoppingCart(id);
-        CartItem cartItemDB = cartItemService.getCartItem(cartItem.getId());
 
-        if (cartItemDB == null)
-            throw new NotFoundException("cart item not found");
+        //Sometimes cart item wasn't assigned it shopping cart id.
+        cartItemSet.forEach(cartItem -> cartItem.setShoppingCart(shoppingCart));
 
-        if (shoppingCart == null)
-            throw new NotFoundException("shopping Cart not found");
-
-        if(!shoppingCart.updateCartItem(cartItemDB))
-            throw new NotFoundException("Shopping cart doesn't have cart item");
+        shoppingCart.setCartItems(cartItemSet);
 
         shoppingCartRepository.save(shoppingCart);
 

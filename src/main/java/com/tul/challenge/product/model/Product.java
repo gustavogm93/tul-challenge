@@ -8,10 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -33,19 +30,19 @@ public class Product implements Serializable {
     )
     private UUID id;
 
-    @NotEmpty(message = "name cannot be empty")
-    @Column(name="name")
+    @NotEmpty
     private String name;
 
-    @NotNull(message = "price cannot not be empty")
+    @NotNull
+    @Positive
     @Digits(integer = 6, fraction = 3, message = "price must be 3 fraction decimal")
-    @Positive(message = "price must be positive")
     private BigDecimal price;
 
-    @NotEmpty(message = "SKU cannot be empty")
+    @NotEmpty
+    @Pattern(regexp = "[A-Z]{3,4}-[0-9]{3}", message = "SKU must be in format AAA-###")
     private String SKU;
 
-    @NotEmpty(message = "description cannot be empty")
+    @NotEmpty
     private String description;
 
     private boolean discount = false;
@@ -62,9 +59,13 @@ public class Product implements Serializable {
     }
 
     private void updateDiscount(boolean discount, BigDecimal oldPrice){
-        if(discount == this.discount || this.price.compareTo(oldPrice) != 0) return;
+        if(discount == this.discount || this.price.compareTo(oldPrice) != 0) {
+            this.discount = discount;
+            return;
+        }
         //price distinct no update
-        this.price =  this.discount ? this.price.multiply(BigDecimal.valueOf(2)) : this.price.divide(BigDecimal.valueOf(2));
+        BigDecimal discountStatic = BigDecimal.valueOf(2);
+        this.price =  this.discount ? this.price.multiply(discountStatic) : this.price.divide(discountStatic);
 
         this.discount = discount;
     }

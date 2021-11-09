@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tul.challenge.shopping.cart.model.ShoppingCart;
-import com.tul.challenge.shopping.cart.repository.ShoppingCartRepository;
 import com.tul.challenge.shopping.cart.services.ShoppingCartService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,9 +36,6 @@ public class ShoppingCartControllerTest {
 
     @MockBean
     private ShoppingCartService shoppingCartService;
-
-    @MockBean
-    private ShoppingCartRepository shoppingCartRepository;
 
     private ShoppingCart shoppingCart;
 

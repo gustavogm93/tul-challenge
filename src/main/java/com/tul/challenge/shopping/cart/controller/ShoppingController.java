@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -75,9 +76,9 @@ public class ShoppingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateCartItemToShoppingCart(@PathVariable("id") UUID id, @Valid @RequestBody CartItem cartItem){
+    public ResponseEntity<String> updateCartItemToShoppingCart(@PathVariable("id") UUID id, @Valid @RequestBody Set<CartItem> cartItemSet){
 
-        shoppingCartService.updateCartItemInShoppingCart(id, cartItem);
+        shoppingCartService.updateCartItemInShoppingCart(id, cartItemSet);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Cart item was successfully updated from shopping cart");
     }

@@ -48,7 +48,7 @@ public class ProductTest {
                 .name("ProductMock")
                 .price(BigDecimal.valueOf(12.50))
                 .description("This is a ProductMock")
-                .SKU("MOCK-1")
+                .SKU("MOCK-130")
                 .discount(false)
                 .build();
     }
@@ -59,7 +59,7 @@ public class ProductTest {
                 .name("ProductMock")
                 .price(BigDecimal.valueOf(12.50))
                 .description("This is a ProductMock")
-                .SKU("MOCK-1")
+                .SKU("MOCK-130")
                 .discount(true)
                 .build();
     }
@@ -85,7 +85,7 @@ public class ProductTest {
                 .name("ProductMock")
                 .price(price)
                 .description("This is a ProductMock")
-                .SKU("MOCK-1")
+                .SKU("MOCK-130")
                 .discount(false)
                 .build();
     }

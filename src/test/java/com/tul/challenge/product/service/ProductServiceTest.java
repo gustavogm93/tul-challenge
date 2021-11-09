@@ -1,6 +1,6 @@
 package com.tul.challenge.product.service;
 
-import com.tul.challenge.product.exceptions.ProductNotFoundException;
+import com.tul.challenge.config.exception.CustomNotFoundException;
 import com.tul.challenge.product.model.Product;
 import com.tul.challenge.product.repository.ProductRepository;
 import com.tul.challenge.product.services.ProductService;
@@ -58,9 +58,9 @@ public class ProductServiceTest {
 
     @Test
     @DisplayName("GetProduct, Throw Product not found exception")
-    public void whenNotFoundID_ThenReturnProductNotFoundException() throws ProductNotFoundException {
+    public void whenNotFoundID_ThenReturnProductNotFoundException() throws CustomNotFoundException {
 
-        Throwable exception = assertThrows(ProductNotFoundException.class, () ->productService.getProduct(UUID.randomUUID()));
+        Throwable exception = assertThrows(CustomNotFoundException.class, () ->productService.getProduct(UUID.randomUUID()));
         String expectedMessage = "Product not found";
 
         assertEquals(expectedMessage, exception.getMessage());

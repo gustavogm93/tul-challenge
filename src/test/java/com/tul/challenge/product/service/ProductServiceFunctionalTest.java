@@ -29,10 +29,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class ProductServiceFunctionalTest {
 
-        private Product productMock;
 
         @Autowired
         private MockMvc mvc;
+
+        private Product productMock;
 
         private ObjectMapper mapper;
 
@@ -60,7 +61,7 @@ public class ProductServiceFunctionalTest {
         Product productGetMock = mapper.readValue(productGetResult.getResponse().getContentAsString(), new TypeReference<Product>() {});
 
         Assertions.assertNotEquals(oldPrice, productGetMock.getPrice());
-        Assertions.assertEquals(oldPrice.divide(BigDecimal.valueOf(2)), productGetMock.getPrice());
+        Assertions.assertTrue(oldPrice.divide(BigDecimal.valueOf(2)).compareTo(productGetMock.getPrice()) == 0 );
     }
 
 

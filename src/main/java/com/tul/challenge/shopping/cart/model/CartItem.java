@@ -1,11 +1,13 @@
 package com.tul.challenge.shopping.cart.model;
 
 
-import com.tul.challenge.shopping.cart.exceptions.cart.item.UpdateDifferentCartItemException;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.tul.challenge.product.model.Product;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import com.tul.challenge.shopping.cart.exceptions.cart.item.UpdateDifferentCartItemException;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -18,34 +20,50 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "Cart_Item")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class CartItem implements Serializable {
 
     @Id
     @Type(type="uuid-char")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     private UUID id;
 
     @Valid
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "PRODUCT_FK"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false, unique = true)
     private Product product;
 
-    @NotNull(message = "quantity cannot be empty")
+    @NotNull
     @Positive
     private int quantity = 1;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shopping_cart_id" , referencedColumnName = "id", nullable = true)
+    @JsonBackReference
+    private ShoppingCart shoppingCart;
+
 
     public CartItem(){
         this.id = UUID.randomUUID();
     }
 
     public void updateCartItem(CartItem cartItemRequest){
-        if(this.id.compareTo(cartItemRequest.getId()) != 0)
+        if(this.id.compareTo(cartItemRequest.getId()) != 0) //TODO: check if this is necessary
             throw new UpdateDifferentCartItemException("Your Cart item Id Path is different from cart item id request body");
 
         this.product = cartItemRequest.product;
         this.quantity = cartItemRequest.quantity;
+
+        if(shoppingCart != null)
+        this.shoppingCart = cartItemRequest.shoppingCart;
     }
 
     @Transient

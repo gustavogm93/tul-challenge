@@ -1,10 +1,4 @@
-
-SET FOREIGN_KEY_CHECKS = 0;
-
-DROP TABLE Product;
-DROP TABLE Cart_Item;
-
-SET FOREIGN_KEY_CHECKS = 1;
+/*SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE IF NOT EXISTS Product(
     `id` varchar(255) NOT NULL,
@@ -39,11 +33,9 @@ CREATE TABLE IF NOT EXISTS Cart_Item(
 
 alter table Cart_Item add foreign key (product_id) references Product(id) on DELETE CASCADE;
 
-INSERT INTO Cart_Item(id, product_id, quantity) VALUES ('223e4567-e89b-12d3-a456-426614174053','123e4567-e89b-12d3-a456-426614174000', 1);
 
 
-
-
+*/
 /*
 CREATE TABLE IF NOT EXISTS Shopping_Cart(
     `id` varchar(255) NOT NULL,

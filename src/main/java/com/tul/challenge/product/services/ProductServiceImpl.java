@@ -1,8 +1,8 @@
 package com.tul.challenge.product.services;
 
-import com.tul.challenge.product.exceptions.ProductNotFoundException;
-import com.tul.challenge.product.repository.ProductRepository;
+import com.tul.challenge.config.exception.CustomNotFoundException;
 import com.tul.challenge.product.model.Product;
+import com.tul.challenge.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class ProductServiceImpl  implements ProductService {
 
     @Override
     public Product getProduct(UUID id) {
-        return productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("Product not found"));
+        return productRepository.findById(id).orElseThrow(()-> new CustomNotFoundException(Product.class));
     }
 
     @Override

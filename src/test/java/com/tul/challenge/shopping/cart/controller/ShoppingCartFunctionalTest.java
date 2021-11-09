@@ -74,11 +74,9 @@ public class ShoppingCartFunctionalTest {
         cartItem.setQuantity(2);
         MvcResult cartItemResult = performPostMock("api/cart/", Mapping.asJsonString(cartItem));
 
-
         //4 Step: add cart item into Shopping Cart
         //generate expected Shopping Cart TotalAmount
         BigDecimal totalAmountBaseExpected = cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())) ;
-
 
         //add cart item to shopping cart
         MvcResult shoppingCartWithItemResult = performPostWithPath200StatusMock("api/shopping/{id}", String.valueOf(shoppingCartMock.getId()),Mapping.asJsonString(cartItem) );
@@ -140,7 +138,13 @@ public class ShoppingCartFunctionalTest {
         //8 Check: cartItem total amount is Product price x quantity, considering that product was update its discount
         //Check
         BigDecimal productPriceFinal = productBaseMock.getPrice().divide(BigDecimal.valueOf(2));
-        Assertions.assertEquals(cartItemUpdated.getTotalAmountInCartItem(), productPriceFinal.multiply(BigDecimal.valueOf(2)));
+        BigDecimal totalAmountOnCartItemUpdated = cartItemUpdated.getTotalAmountInCartItem();
+
+        //Must be the same that product price final * 2
+        BigDecimal expectedTotalAmountOncART = productPriceFinal.multiply(BigDecimal.valueOf(2));
+
+
+        Assertions.assertTrue(totalAmountOnCartItemUpdated.compareTo(productPriceFinal.multiply(BigDecimal.valueOf(2))) == 0);
         Assertions.assertNotEquals(cartItemUpdated.getTotalAmountInCartItem(), oldCartItemAmount);
 
     }

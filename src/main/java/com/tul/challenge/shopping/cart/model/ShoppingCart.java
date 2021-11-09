@@ -1,9 +1,15 @@
 package com.tul.challenge.shopping.cart.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.tul.challenge.shopping.cart.exceptions.cart.item.DuplicateCartItemException;
+import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartEmptyException;
+import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartHasStateCompletedException;
 import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartNotHaveCartItemException;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -17,17 +23,28 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "Shopping_Cart")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ShoppingCart implements Serializable {
 
     @Id
     @Type(type="uuid-char")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     private UUID id;
 
-    @OneToMany(targetEntity = CartItem.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "shopping_cart_id", referencedColumnName = "id")
+    @OneToMany(
+            mappedBy = "shoppingCart",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
+    )
+    @JsonManagedReference
     private Set<@Valid CartItem> cartItems;
 
     @Transient
@@ -41,11 +58,6 @@ public class ShoppingCart implements Serializable {
         this.id = id;
     }
 
-    public boolean addCartItem(CartItem cartItem){
-         boolean response = this.cartItems.add(cartItem);
-        totalAmount();
-        return response;
-    }
 
     public ShoppingCart(Set<@Valid CartItem> cartItems, State state) {
         this.id = UUID.randomUUID();
@@ -64,7 +76,7 @@ public class ShoppingCart implements Serializable {
     @PostLoad
     @PostUpdate
     @PostMapping
-    @PostPersist
+    @PostPersist //TODO: check if is necessary
     public void totalAmount(){
         if(cartItems == null){
             this.totalAmount = BigDecimal.ZERO;
@@ -73,14 +85,23 @@ public class ShoppingCart implements Serializable {
         this.totalAmount = cartItems.stream().map(CartItem::getTotalAmountInCartItem).reduce(BigDecimal.valueOf(0), BigDecimal::add);
     }
 
-    public boolean removeCartItem(CartItem cartItemId){
-        boolean response = cartItems.remove(cartItemId);
-        totalAmount();
+    public boolean addCartItem(CartItem cartItem){
+        boolean response = this.cartItems.add(cartItem);
+        if(!response) throw new DuplicateCartItemException("Add CartItem on ShoppingCart: Shopping cart already have cart item requested");
 
+        totalAmount();
         return response;
     }
 
-    public boolean updateCartItem(CartItem cartItemRequest) {
+    public void removeCartItem(CartItem cartItem){
+        boolean response = this.cartItems.remove(cartItem);
+
+        if(!response) throw new ShoppingCartNotHaveCartItemException("Remove CartItem on ShoppingCart: Shopping cart not have cart item requested");
+
+        totalAmount();
+    }
+
+    public void updateCartItem(CartItem cartItemRequest) {
         boolean hasCartItem = cartItems.remove(cartItemRequest);
 
         if(!hasCartItem)
@@ -88,15 +109,23 @@ public class ShoppingCart implements Serializable {
 
         cartItems.add(cartItemRequest);
         totalAmount();
-
-        return true;
     }
-
+    //TODO: HashCode strategy
     public void setCartItems( Set<@Valid CartItem> cartItems) {
-        this.cartItems = cartItems;
+        this.cartItems.clear();
+        this.cartItems.addAll(cartItems);
         totalAmount();
     }
 
+    public void validateShoppingCartNotEmpty() {
+        if( this.getCartItems().size() == 0)
+            throw new ShoppingCartEmptyException("Shopping cart is empty, not have cart items");
+    }
+
+    public void shoppingCartStateIsCompleted() {
+        if (this.getState() == State.COMPLETED)
+            throw new ShoppingCartHasStateCompletedException("Shopping cart is currently completed");
+    }
 
     @Override
     public boolean equals(Object obj) {

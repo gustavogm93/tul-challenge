@@ -1,6 +1,7 @@
 package com.tul.challenge.shopping.cart.services;
 
 import com.tul.challenge.config.exception.CustomNotFoundException;
+import com.tul.challenge.shopping.cart.exceptions.cart.item.SomeCartItemNotExist;
 import com.tul.challenge.shopping.cart.model.CartItem;
 import com.tul.challenge.shopping.cart.model.ShoppingCart;
 import com.tul.challenge.shopping.cart.model.State;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -80,18 +83,29 @@ public class ShoppingCartServiceImpl implements ShoppingCartService{
 
         shoppingCart.removeCartItem(cartItemDB);
 
-        shoppingCartRepository.save(shoppingCart);
+        shoppingCartRepository.saveAndFlush(shoppingCart);
 
         return true;
     }
 
+    //improve with List to List relationship, grouping by id and updating every cart.
+    public boolean updateCartItemInShoppingCart(UUID id, Set<CartItem> cartItemSet) {
 
-    public boolean updateCartItemInShoppingCart(UUID id, CartItem cartItem) {
+        List<UUID> ids = cartItemSet.stream().map(CartItem::getId).collect(Collectors.toList());
+
+        Set<CartItem> cartItemsDB = cartItemService.getCartItemsById(ids);
+
+        //TODO: improve this because can not exist some cart item
+        if(cartItemsDB.size() != cartItemSet.size()){
+            throw new SomeCartItemNotExist();
+        }
 
         ShoppingCart shoppingCart = this.getShoppingCart(id);
-        CartItem cartItemDB = cartItemService.getCartItem(cartItem.getId());
 
-        shoppingCart.updateCartItem(cartItemDB);
+        //Sometimes cart item wasn't assigned it shopping cart id.
+        cartItemSet.forEach(cartItem -> cartItem.setShoppingCart(shoppingCart));
+
+        shoppingCart.setCartItems(cartItemSet);
 
         shoppingCartRepository.save(shoppingCart);
 

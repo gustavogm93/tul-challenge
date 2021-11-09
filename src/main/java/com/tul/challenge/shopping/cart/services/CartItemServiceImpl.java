@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -37,6 +38,8 @@ public class CartItemServiceImpl implements CartItemService {
 
             Product productDB = productService.getProduct(cartItem.getProduct().getId());
 
+
+            //TODO: This only will be applied on Same user, but not on different users.
             if(checkIfExistAnotherCartItemWithSameProduct(productDB.getId()))
             throw new AnotherCartItemHasTheSameProductException();
 
@@ -53,6 +56,7 @@ public class CartItemServiceImpl implements CartItemService {
 
             Optional<CartItem> cartItemWithSameProduct = getCartItemByProductId(productDB.getId());
 
+             //TODO: This only will be applied on Same user, but not on different users.
             if(cartItemWithSameProduct.isPresent() && cartItemWithSameProduct.get().getId() != cartItemDB.getId())
             throw new AnotherCartItemHasTheSameProductException();
 
@@ -64,14 +68,18 @@ public class CartItemServiceImpl implements CartItemService {
 
     }
 
-    private Optional<CartItem> getCartItemByProductId(UUID productId) {
+    public Optional<CartItem> getCartItemByProductId(UUID productId) {
         return cartItemRepository.getCartItemByProductId(productId);
     }
 
-    private boolean checkIfExistAnotherCartItemWithSameProduct(UUID productId) {
+    public boolean checkIfExistAnotherCartItemWithSameProduct(UUID productId) {
         Optional<CartItem> cartItemWithSameProduct = getCartItemByProductId(productId);
 
         return cartItemWithSameProduct.isPresent();
+    }
+
+    public Set<CartItem> getCartItemsById(List<UUID> ids) {
+        return cartItemRepository.findByIds(ids);
     }
 
     public boolean deleteCartItem(UUID id) {

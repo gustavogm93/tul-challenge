@@ -4,6 +4,7 @@ import com.tul.challenge.config.exception.error.FormatMessage;
 import com.tul.challenge.product.exceptions.InvalidProductFormatException;
 import com.tul.challenge.shopping.cart.exceptions.cart.item.AnotherCartItemHasTheSameProductException;
 import com.tul.challenge.shopping.cart.exceptions.cart.item.DuplicateCartItemException;
+import com.tul.challenge.shopping.cart.exceptions.cart.item.SomeCartItemNotExist;
 import com.tul.challenge.shopping.cart.exceptions.cart.item.UpdateDifferentCartItemException;
 import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartEmptyException;
 import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartHasStateCompletedException;
@@ -27,7 +28,7 @@ public class ExceptionConfig {
                     InvalidProductFormatException.class, ShoppingCartNotHaveCartItemException.class,
                     UpdateDifferentCartItemException.class, ShoppingCartEmptyException.class,
                     ShoppingCartHasStateCompletedException.class, IllegalArgumentException.class,
-                    AnotherCartItemHasTheSameProductException.class})
+                    AnotherCartItemHasTheSameProductException.class, SomeCartItemNotExist.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<?> badRequestException(Exception e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(FormatMessage.toJson(e.getMessage()));

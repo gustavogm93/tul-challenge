@@ -6,8 +6,10 @@ import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartEmpt
 import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartHasStateCompletedException;
 import com.tul.challenge.shopping.cart.exceptions.shopping.cart.ShoppingCartNotHaveCartItemException;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -21,19 +23,26 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "Shopping_Cart")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ShoppingCart implements Serializable {
 
     @Id
     @Type(type="uuid-char")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     private UUID id;
 
     @OneToMany(
             mappedBy = "shoppingCart",
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
     )
     @JsonManagedReference
     private Set<@Valid CartItem> cartItems;
@@ -85,7 +94,7 @@ public class ShoppingCart implements Serializable {
     }
 
     public void removeCartItem(CartItem cartItem){
-        boolean response = cartItems.remove(cartItem);
+        boolean response = this.cartItems.remove(cartItem);
 
         if(!response) throw new ShoppingCartNotHaveCartItemException("Remove CartItem on ShoppingCart: Shopping cart not have cart item requested");
 
@@ -101,9 +110,10 @@ public class ShoppingCart implements Serializable {
         cartItems.add(cartItemRequest);
         totalAmount();
     }
-
+    //TODO: HashCode strategy
     public void setCartItems( Set<@Valid CartItem> cartItems) {
-        this.cartItems = cartItems;
+        this.cartItems.clear();
+        this.cartItems.addAll(cartItems);
         totalAmount();
     }
 

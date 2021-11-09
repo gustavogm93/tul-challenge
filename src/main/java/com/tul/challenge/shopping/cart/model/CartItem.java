@@ -4,9 +4,8 @@ package com.tul.challenge.shopping.cart.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.tul.challenge.product.model.Product;
 import com.tul.challenge.shopping.cart.exceptions.cart.item.UpdateDifferentCartItemException;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
@@ -21,13 +20,19 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "Cart_Item")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class CartItem implements Serializable {
 
     @Id
     @Type(type="uuid-char")
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     private UUID id;
 
     @Valid
@@ -56,6 +61,9 @@ public class CartItem implements Serializable {
 
         this.product = cartItemRequest.product;
         this.quantity = cartItemRequest.quantity;
+
+        if(shoppingCart != null)
+        this.shoppingCart = cartItemRequest.shoppingCart;
     }
 
     @Transient
